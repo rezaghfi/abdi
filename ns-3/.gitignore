@@ -67,7 +67,6 @@ doc/introspected-doxygen.h
 \.pcap$
 \.mob$
 \.routes$
-doc/
 ^doc/manual/build
 ^doc/tutorial/build
 ^doc/testing/build
