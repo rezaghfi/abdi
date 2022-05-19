@@ -1,4 +1,4 @@
 [submodule "NFD"]
 	path = ns-3/src/ndnSIM/NFD
-	url = https://github.com/rezaghfi/ndnsim_nfd
+	url = https://github.com/rezaghfi/NFD
 branch = master
