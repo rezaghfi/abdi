@@ -22,12 +22,12 @@ namespace ns3 {
     ndnHelper.InstallAll();
 
     // Set strategy
-    ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/best-route");
+    //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/best-route");
     //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/rfa");
     //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/saf");
     //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/smdp");
     //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/lamdp");
-    //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/amif");
+    ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/amif");
 
     // Installing global routing interface on all nodes
     ndn::GlobalRoutingHelper ndnGlobalRoutingHelper;
