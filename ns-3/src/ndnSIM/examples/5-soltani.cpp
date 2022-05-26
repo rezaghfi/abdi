@@ -16,9 +16,9 @@ namespace ns3 {
 
     // Install NDN stack on all nodes
     ndn::StackHelper ndnHelper;
-    //set lru for replacement
-    ndnHelper.setPolicy("nfd::cs::lru");
-  
+    //set soltani for replacement
+    ndnHelper.setPolicy("nfd::cs::soltani");
+    ndnHelper.setCsSize(100);
     ndnHelper.InstallAll();
 
     // Set strategy
@@ -66,7 +66,7 @@ namespace ns3 {
     ndn::L3RateTracer::InstallAll("output/rate-trace.txt", Seconds(0.5));
     L2RateTracer::InstallAll("output/drop-trace.txt", Seconds(0.5));
     ndn::AppDelayTracer::InstallAll("output/app-delays-trace.txt");
-
+    ndn::CsTracer::InstallAll("output/cs-trace.txt", Seconds(0.5));
     Simulator::Run();
     Simulator::Destroy();
 
