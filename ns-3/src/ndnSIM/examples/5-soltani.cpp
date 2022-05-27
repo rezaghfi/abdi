@@ -18,7 +18,7 @@ namespace ns3 {
     ndn::StackHelper ndnHelper;
     //set soltani for replacement
     ndnHelper.setPolicy("nfd::cs::soltani");
-    ndnHelper.setCsSize(100);
+    ndnHelper.setCsSize(1000);
     ndnHelper.InstallAll();
 
     // Set strategy

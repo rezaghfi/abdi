@@ -43,6 +43,7 @@
 #include "ns3/ndnSIM/NFD/daemon/face/generic-link-service.hpp"
 #include "ns3/ndnSIM/NFD/daemon/table/cs-policy-priority-fifo.hpp"
 #include "ns3/ndnSIM/NFD/daemon/table/cs-policy-lru.hpp"
+#include "ns3/ndnSIM/NFD/daemon/table/cs-policy-soltani.hpp"
 
 NS_LOG_COMPONENT_DEFINE("ndn.StackHelper");
 
@@ -57,9 +58,11 @@ StackHelper::StackHelper()
   setCustomNdnCxxClocks();
 
   m_csPolicies.insert({"nfd::cs::lru", [] { return make_unique<nfd::cs::LruPolicy>(); }});
+    m_csPolicies.insert({"nfd::cs::soltani", [] { return make_unique<nfd::cs::SoltaniPolicy>(); }});
   m_csPolicies.insert({"nfd::cs::priority_fifo", [] () { return make_unique<nfd::cs::PriorityFifoPolicy>(); }});
 
   m_csPolicyCreationFunc = m_csPolicies["nfd::cs::lru"];
+  m_csPolicyCreationFunc = m_csPolicies["nfd::cs::soltani"];
 
   m_ndnFactory.SetTypeId("ns3::ndn::L3Protocol");
 
