@@ -11,25 +11,23 @@ namespace ns3 {
     cmd.Parse(argc, argv);
 
     AnnotatedTopologyReader topologyReader("", 25);
-    //topologyReader.SetFileName("src/ndnSIM/examples/topologies/25Fail.txt");
-    //topologyReader.SetFileName("src/ndnSIM/examples/topologies/50Fail.txt");
-    topologyReader.SetFileName("src/ndnSIM/examples/topologies/75Fail.txt");
+    topologyReader.SetFileName("src/ndnSIM/examples/topologies/simple4.txt");
     topologyReader.Read();
 
     // Install NDN stack on all nodes
     ndn::StackHelper ndnHelper;
     //set lru for replacement
     ndnHelper.setPolicy("nfd::cs::lru");
- 
+  
     ndnHelper.InstallAll();
 
     // Set strategy
-    ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/best-route");
+    //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/best-route");
     //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/rfa");
     //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/saf");
     //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/smdp");
     //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/lamdp");
-    //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/amif");
+    ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/equal");
 
     // Installing global routing interface on all nodes
     ndn::GlobalRoutingHelper ndnGlobalRoutingHelper;
@@ -45,12 +43,14 @@ namespace ns3 {
     // Install NDN applications
     std::string prefix = "/prefix";
 
-    // send interest in constant rate
-    //ndn::AppHelper consumerHelper("ns3::ndn::ConsumerCbr");
+    // send interest with zipf
     ndn::AppHelper consumerHelper("ns3::ndn::ConsumerZipfMandelbrot");
     consumerHelper.SetPrefix(prefix);
-    consumerHelper.SetAttribute("Frequency", StringValue("4000")); // interests per second
-
+    consumerHelper.SetAttribute("Frequency", StringValue("2000")); // interests per second
+    //consumerHelper.SetAttribute("Frequency", StringValue("2500")); // interests per second
+    //consumerHelper.SetAttribute("Frequency", StringValue("3000")); // interests per second
+    //consumerHelper.SetAttribute("Frequency", StringValue("3500")); // interests per second
+    //consumerHelper.SetAttribute("Frequency", StringValue("4000")); // interests per second
     consumerHelper.Install(consumer);
 
     ndn::AppHelper producerHelper("ns3::ndn::Producer");

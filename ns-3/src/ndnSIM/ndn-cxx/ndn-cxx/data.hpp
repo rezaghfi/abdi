@@ -22,6 +22,7 @@
 #ifndef NDN_CXX_DATA_HPP
 #define NDN_CXX_DATA_HPP
 
+#include <string>
 #include "ndn-cxx/detail/packet-base.hpp"
 #include "ndn-cxx/encoding/block.hpp"
 #include "ndn-cxx/meta-info.hpp"
@@ -29,6 +30,7 @@
 #include "ndn-cxx/security/security-common.hpp"
 #include "ndn-cxx/signature-info.hpp"
 
+using namespace std;
 namespace ndn {
 
 /** @brief Represents a %Data packet.
@@ -37,6 +39,27 @@ namespace ndn {
 class Data : public PacketBase, public std::enable_shared_from_this<Data>
 {
 public:
+        
+  int linksnum = 100;
+  struct PathStats {
+    string id;
+    string prefix;
+    double min_bw;
+    double delay;
+    double throughput;
+    double ndelay;
+    double nbw;
+    double deg;
+    double degree;
+    double qouta;
+    double score;
+  };
+
+  string nodeid = "";
+  PathStats path;
+
+  PathStats links[100];
+
   class Error : public tlv::Error
   {
   public:
@@ -104,6 +127,9 @@ public:
    */
   void
   wireDecode(const Block& wire);
+
+
+  int dataCounterSend;
 
   /** @brief Check if this instance has cached wire encoding.
    */
@@ -322,6 +348,66 @@ protected:
    */
   void
   resetWire();
+
+public:
+  int shared_node(PathStats path1, PathStats path2){
+    string str1 = path1.id;
+    string str2 = path2.id;
+    int size1 = str1.length(), size2 = str2.length();
+    // f1 and f2 for frequencies of characters
+    // of string str1 and str2
+    int f1[100] = {0};
+    int f2[100] = {0};
+    // 'c' To count the valid pairs
+    int i, c = 0;
+    // updating the frequencies of str1 and st2
+    for (i = 0; i < size1; i++) {
+      f1[str1[i] - 'a']++;
+    }
+    for (i = 0; i < size2; i++) {
+      f2[str2[i] - 'a']++;
+    }
+    // Find the count of valid pairs
+    for (i = 0; i < 100; i++) {
+      c += (min(f1[i], f2[i]));
+    }
+    return c;
+  }
+
+  string getPrefix(){
+    return path.prefix;
+  }
+  double no;
+  double getBW(){
+    // حداقل پهنای باند بین لینک های مختلف
+    double min = 0;
+    for(int i=0; i < linksnum; i++){
+      if(min > links[i].min_bw){
+        min = links[i].min_bw;
+      }
+    }
+    return min;
+  }
+
+  double getDelay(){
+    // میانگین تاخیر در بین لینک های مختلف
+    double avg = 0;
+    for(int i=0; i < linksnum; i++){  
+        avg += links[i].delay; 
+    }
+    avg = avg / linksnum;
+    return avg;  
+  }
+
+  double getTroughput(){
+    // اندازه گیری تروپوت در مسیر
+    return path.throughput;
+  }
+
+  string getId(){
+    // برگرداندن ایدی لینک موردنظر
+    return this->nodeid;
+  }
 
 private:
   Name m_name;

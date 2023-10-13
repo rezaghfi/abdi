@@ -47,6 +47,7 @@ namespace ns3 {
 
     // send interest in constant rate
     ndn::AppHelper consumerHelper("ns3::ndn::ConsumerCbr");
+    //ndn::AppHelper consumerHelper("ns3::ndn::ConsumerZipfMandelbrot");
     consumerHelper.SetPrefix(prefix);
     consumerHelper.SetAttribute("Frequency", StringValue("4000")); // interests per second
 

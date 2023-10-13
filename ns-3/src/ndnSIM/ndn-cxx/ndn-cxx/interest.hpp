@@ -22,6 +22,7 @@
 #ifndef NDN_CXX_INTEREST_HPP
 #define NDN_CXX_INTEREST_HPP
 
+#include <iostream>
 #include "ndn-cxx/detail/packet-base.hpp"
 #include "ndn-cxx/name.hpp"
 #include "ndn-cxx/security/security-common.hpp"
@@ -33,6 +34,7 @@
 
 #include <boost/endian/conversion.hpp>
 
+using namespace std;
 namespace ndn {
 
 class Data;
@@ -76,6 +78,8 @@ public:
       data()[3] = n4;
     }
 
+
+
   private: // non-member operators
     // NOTE: the following "hidden friend" operators are available via
     //       argument-dependent lookup only and must be defined inline.
@@ -99,6 +103,28 @@ public:
       return os;
     }
   };
+
+      // public
+public:
+  int linksnum = 100;
+  struct PathStats {
+    string id;
+    string prefix;
+    double min_bw;
+    double delay;
+    double throughput;
+    double ndelay;
+    double nbw;
+    double deg;
+    double degree;
+    double qouta;
+    double score;
+  };
+
+  string nodeid = "";
+  PathStats path;
+
+  PathStats links[100];
 
   /** @brief Construct an Interest with given @p name and @p lifetime.
    *
@@ -487,6 +513,67 @@ private:
   std::vector<Block> m_parameters;
 
   mutable Block m_wire;
+
+public:
+  int shared_node(PathStats path1, PathStats path2){
+    string str1 = path1.id;
+    string str2 = path2.id;
+    int size1 = str1.length(), size2 = str2.length();
+    // f1 and f2 for frequencies of nodes
+    // به ازای تعداد هر نود مشخص در مسیر ما در آرایه های زیر در همان اندیس آرایه مقدار داریم
+    int f1[100] = {0};
+    int f2[100] = {0};
+    // 'c' To count the valid pairs
+    int i, c = 0;
+    // updating the frequencies of str1 and st2
+    for (i = 0; i < size1; i++) {
+      //تبدیل کاراکتر مثل ۲ به عدد ۲
+      f1[str1[i] - 'a']++;
+    }
+    for (i = 0; i < size2; i++) {
+      f2[str2[i] - 'a']++;
+    }
+    // تعداد کاراکترهای مشترک در هر خانه را در متغییر سی ذخیره می کنیم
+    for (i = 0; i < 100; i++) {
+      c += (min(f1[i], f2[i]));
+    }
+    return c;
+  }
+
+  string getPrefix(){
+    return path.prefix;
+  }
+  double no;
+  double getBW(){
+    // حداقل پهنای باند بین لینک های مختلف
+    double min = 0;
+    for(int i=0; i < linksnum; i++){
+      if(min > links[i].min_bw){
+        min = links[i].min_bw;
+      }
+    }
+    return min;
+  }
+
+  double getDelay(){
+    // میانگین تاخیر در بین لینک های مختلف
+    double avg = 0;
+    for(int i=0; i < linksnum; i++){  
+        avg += links[i].delay; 
+    }
+    avg = avg / linksnum;
+    return avg;  
+  }
+
+  double getTroughput(){
+    // اندازه گیری تروپوت در مسیر
+    return path.throughput;
+  }
+
+  string getId(){
+    // برگرداندن ایدی لینک موردنظر
+    return this->nodeid;
+  }
 };
 
 NDN_CXX_DECLARE_WIRE_ENCODE_INSTANTIATIONS(Interest);

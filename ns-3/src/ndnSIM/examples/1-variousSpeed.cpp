@@ -11,7 +11,9 @@ namespace ns3 {
     cmd.Parse(argc, argv);
 
     AnnotatedTopologyReader topologyReader("", 25);
-    topologyReader.SetFileName("src/ndnSIM/examples/topologies/sprintTopo.txt");
+    // اول آدرس فایل توپولوژي
+    //topologyReader.SetFileName("src/ndnSIM/examples/topologies/sprintTopo.txt");
+     topologyReader.SetFileName("src/ndnSIM/examples/topologies/simple.txt");
     topologyReader.Read();
 
     // Install NDN stack on all nodes
@@ -21,21 +23,25 @@ namespace ns3 {
   
     ndnHelper.InstallAll();
 
-    // Set strategy
+    // دوم تنظیم استراتژی می کنیم
     //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/best-route");
     //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/rfa");
     //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/saf");
     //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/smdp");
-    //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/lamdp");
-    ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/amif");
+     //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/lamdp");
+    //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/amif");
+    ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/lamdptest");
+     //ndn::StrategyChoiceHelper::InstallAll("/", "/localhost/nfd/strategy/amiftest");
 
     // Installing global routing interface on all nodes
     ndn::GlobalRoutingHelper ndnGlobalRoutingHelper;
     ndnGlobalRoutingHelper.InstallAll();
 
-    // Getting containers for the consumer/producer
-    Ptr<Node> producer = Names::Find<Node>("Node42");
-    Ptr<Node> consumer = Names::Find<Node>("Node12");
+    // سوم انتخاب نودهای تولیدکنننده و مصرف کننده
+     //Ptr<Node> producer = Names::Find<Node>("Node42");
+     //Ptr<Node> consumer = Names::Find<Node>("Node12");
+    Ptr<Node> producer = Names::Find<Node>("Node0");
+    Ptr<Node> consumer = Names::Find<Node>("Node15");
     // IF ERROR
     // NodeContainer consumerNodes;
     // consumerNodes.Add(Names::Find<Node>("Node12"));
@@ -44,13 +50,16 @@ namespace ns3 {
     std::string prefix = "/prefix";
 
     // send interest in constant rate
-    ndn::AppHelper consumerHelper("ns3::ndn::ConsumerCbr");
+    //ndn::AppHelper consumerHelper("ns3::ndn::ConsumerCbr");
+    ndn::AppHelper consumerHelper("ns3::ndn::ConsumerZipfMandelbrot");
     consumerHelper.SetPrefix(prefix);
-    consumerHelper.SetAttribute("Frequency", StringValue("2000")); // interests per second
+    //consumerHelper.SetAttribute("Frequency", StringValue("2000")); // interests per second
     //consumerHelper.SetAttribute("Frequency", StringValue("2500")); // interests per second
     //consumerHelper.SetAttribute("Frequency", StringValue("3000")); // interests per second
     //consumerHelper.SetAttribute("Frequency", StringValue("3500")); // interests per second
-    //consumerHelper.SetAttribute("Frequency", StringValue("4000")); // interests per second
+     //consumerHelper.SetAttribute("Frequency", StringValue("4000")); // interests per second
+  //سرعت برای توپولوژی های کوچک
+    consumerHelper.SetAttribute("Frequency", StringValue("40")); // interests per second
     consumerHelper.Install(consumer);
 
     ndn::AppHelper producerHelper("ns3::ndn::Producer");
@@ -65,7 +74,7 @@ namespace ns3 {
     // Calculate and install FIBs
     ndn::GlobalRoutingHelper::CalculateRoutes();
 
-    Simulator::Stop(Seconds(50.0));
+    Simulator::Stop(Seconds(10.0));
 
     // tracer --------- it for rate trace and drop trace
     ndn::L3RateTracer::InstallAll("output/rate-trace.txt", Seconds(0.5));

@@ -60,7 +60,7 @@ ConsumerZipfMandelbrot::GetTypeId(void)
 ConsumerZipfMandelbrot::ConsumerZipfMandelbrot()
   : m_N(100) // needed here to make sure when SetQ/SetS are called, there is a valid value of N
   , m_q(0.7)
-  , m_s(0.7)
+  , m_s(0.5)
   , m_seqRng(CreateObject<UniformRandomVariable>())
 {
   // SetNumberOfContents is called by NS-3 object system during the initialization
